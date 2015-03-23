@@ -1,74 +1,117 @@
-var board = [];
-var result = [];
+var board = [[]];
+var result = [[]];
 
 $('body').append('<div id="winMessage"><div id="message"> <h1>You did it!</h1><button id="newGame">Restart</button> </div></div>');
 $('#winMessage').hide();
+startGame();
 
-for (var i = 4 ; i > 0; i--) {
-  board.push( i % 2 );
-  result.push(0);
-};
-for (var i = 0; i < board.length; i++) {
-    // if(board[i] ==
-    $('#game').append('<button id="' + i + '" class="slot empty">');
-
-};
-$('.slot').on("click", slotClick);
 
 function slotClick () {
   var id = $(this).attr('id');
-
-  var state = result[id];
-
+  var rows = board.length;
+  var col = id % rows;
+  var row = Math.floor(id / rows);
+  // console.log(row + '|' + col);
+  var state = result[row][col];
+  console.log(board);
+  console.log(state);
   if(state == 0) {
-    result[id] = 1;
+    result[row][col] = 1;
   }
   else {
-    result[id] = 0;
+    result[row][col] = 0;
   }
   drawGame();
   check();
 
   };
 
-$('#newGame').on("click", startGame);
+$('#newGame').click(startGame);
 
 function startGame() {
   $('#winMessage').hide();
-  for (var i = result.length - 1; i >= 0; i--) {
-    result[i] = 0;
+  var rows = 2;
+  board = [];
+  result = [];
+
+
+
+  $('#game').empty();
+  var row = [];
+  var currentCol;
+  var slotCount = 0;
+  for (var i = 0 ; i < rows; i++) { //rows
+    for (var j = 0; j < rows; j++) { //cols
+      row[j] = (i+j) % 2;
+      // console.log('row ' + j)
+      $('#game').append('<button id="' + slotCount + '" class="slot empty">');
+      slotCount++;
+    };
+    board.push(row);
+    row = [];
+
   };
-  console.log(result);
+
+  result = board.map(
+    function(){
+      var arr = [];
+      for (var i = 0; i < this.length; i++) {
+        arr.push(0);
+      };
+      return arr;
+    }, board);
+
+  // calcHints(board);
+
+
+  $('.slot').click(slotClick);
+
   drawGame();
 }
 
 function drawGame () {
-  for (var i = result.length - 1; i >= 0; i--) {
-    if(result[i] == 1) {
-      $('#' + i).addClass('filled');
-    }
-    else {
-      $('#' + i).removeClass('filled');
-    }
+  var slotCount = 0;
+  for (var row = 0; row < result.length; row++) {
+    for (var col = 0; col < result.length; col++) {
+      if(result[row][col] == 1) {
+        $('#' + slotCount).addClass('filled');
+      }
+      else {
+        $('#' + slotCount).removeClass('filled');
+      }
+      slotCount++;
+    };
   };
 }
 
 function check () {
   var won = true;
-  for (var i = board.length - 1; i >= 0; i--) {
-    if(board[i] != result[i]) {
-      won = false;
+  for (var row = 0; row < result.length; row++) {
+    for (var col = 0; col < result.length; col++) {
+      if(board[row][col] != result[row][col]) {
+        won = false;
+      }
     }
-  };
+  }
 
   if(won) {
     $('#winMessage').show();
   }
 }
 
+function calcHints(board) {
+  // var rowAmount = Math.sqrt(board.length);
+
+  // var hintsVert = [];
+  // var hintsHor = [];
+  // for (var row = 0; row < rowAmount; row++) {
+  //   for (var col = 0; col < rowAmount; col++) {
+
+  //   };
+  //   board[i]
+  // };
+}
+
 $(function () {
-  console.log(board);
-
-
 
 });
