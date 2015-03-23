@@ -30,10 +30,11 @@ $('#newGame').click(startGame);
 
 function startGame() {
   $('#winMessage').hide();
-  var rows = 2;
+  var rows = 8;
   board = [];
   result = [];
-
+  $('#game').css('width', rows * 50)
+  // $('#game').css('width', rows * 50)
 
 
   $('#game').empty();
@@ -46,6 +47,10 @@ function startGame() {
       // console.log('row ' + j)
       $('#game').append('<button id="' + slotCount + '" class="slot empty">');
       slotCount++;
+      if(j == 1 || j == 5)
+      {
+        row[j] = 1
+      }
     };
     board.push(row);
     row = [];
@@ -61,7 +66,8 @@ function startGame() {
       return arr;
     }, board);
 
-  // calcHints(board);
+  var hints = calcHints(board);
+  console.log(hints)
 
 
   $('.slot').click(slotClick);
@@ -100,16 +106,27 @@ function check () {
 }
 
 function calcHints(board) {
-  // var rowAmount = Math.sqrt(board.length);
+  var rowAmount = board.length;
+  var hintsVert = []
+  var hintsHor = []
+  var blockHor = 0
+  var blocksHor = []
+  for (var row = 0; row < rowAmount; row++) {
+    for (var col = 0; col < rowAmount; col++) {
+      if(board[row][col] == 1){
+        blockHor++
+      }
+      if((blockHor != 0) && (board[row][col] != 1 || col == rowAmount - 1 )) {
+        blocksHor.push(blockHor)
+        blockHor = 0
+      }
 
-  // var hintsVert = [];
-  // var hintsHor = [];
-  // for (var row = 0; row < rowAmount; row++) {
-  //   for (var col = 0; col < rowAmount; col++) {
-
-  //   };
-  //   board[i]
-  // };
+    };
+    hintsHor.push(blocksHor)
+    blocksHor = []
+    blockHor = 0
+  };
+  return hintsHor
 }
 
 $(function () {
