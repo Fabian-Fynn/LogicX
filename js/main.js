@@ -1,6 +1,7 @@
 var board = [[]];
 var result = [[]];
-
+var hintsHor = []
+var hintsVer = [[]]
 $('body').append('<div id="winMessage"><div id="message"> <h1>You did it!</h1><button id="newGame">Restart</button> </div></div>');
 $('#winMessage').hide();
 startGame();
@@ -11,10 +12,8 @@ function slotClick () {
   var rows = board.length;
   var col = id % rows;
   var row = Math.floor(id / rows);
-  // console.log(row + '|' + col);
   var state = result[row][col];
-  console.log(board);
-  console.log(state);
+
   if(state == 0) {
     result[row][col] = 1;
   }
@@ -23,7 +22,6 @@ function slotClick () {
   }
   drawGame();
   check();
-
   };
 
 $('#newGame').click(startGame);
@@ -44,7 +42,6 @@ function startGame() {
   for (var i = 0 ; i < rows; i++) { //rows
     for (var j = 0; j < rows; j++) { //cols
       row[j] = (i+j) % 2;
-      // console.log('row ' + j)
       $('#game').append('<button id="' + slotCount + '" class="slot empty">');
       slotCount++;
       if(j == 1 || j == 5)
@@ -57,6 +54,9 @@ function startGame() {
 
   };
 
+  board[3][5] = 0
+  board[3][1] = 0
+
   result = board.map(
     function(){
       var arr = [];
@@ -66,8 +66,9 @@ function startGame() {
       return arr;
     }, board);
 
-  var hints = calcHints(board);
-  console.log(hints)
+  calcHints(board);
+  console.log(hintsHor)
+  console.log(hintsVer)
 
 
   $('.slot').click(slotClick);
@@ -107,26 +108,49 @@ function check () {
 
 function calcHints(board) {
   var rowAmount = board.length;
-  var hintsVert = []
-  var hintsHor = []
   var blockHor = 0
   var blocksHor = []
+  var blockVer = []
+  for (var col = 0; col < rowAmount - 1; col++) {
+    hintsVer.push([])
+  }
+
   for (var row = 0; row < rowAmount; row++) {
     for (var col = 0; col < rowAmount; col++) {
       if(board[row][col] == 1){
         blockHor++
+        if(blockVer[col] != null)
+        {
+          blockVer[col]++
+        }
+        else {
+          blockVer[col] = 1
+        }
+
+      }
+      else if(blockVer[col] == undefined)
+      {
+        blockVer[col] = 0
       }
       if((blockHor != 0) && (board[row][col] != 1 || col == rowAmount - 1 )) {
         blocksHor.push(blockHor)
         blockHor = 0
       }
+      if((blockVer[col] != 0) && (board[row][col] != 1 || row == rowAmount - 1 )) {
+        hintsVer[col].push(blockVer[col])
+        blockVer[col] = 0
+      }
 
     };
+
     hintsHor.push(blocksHor)
     blocksHor = []
     blockHor = 0
+
   };
-  return hintsHor
+  // console.log(hintsVer)
+  // this.hintsHor = hintsHor
+  // this.hintsVer = hintsVer
 }
 
 $(function () {
