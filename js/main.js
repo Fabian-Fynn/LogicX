@@ -31,18 +31,18 @@ function startGame() {
   var rows = 8;
   board = [];
   result = [];
-  $('#game').css('width', rows * 50)
-  // $('#game').css('width', rows * 50)
+  $('#board').css('width', rows * 50)
 
 
-  $('#game').empty();
+  $('#board').empty();
+
   var row = [];
   var currentCol;
   var slotCount = 0;
   for (var i = 0 ; i < rows; i++) { //rows
     for (var j = 0; j < rows; j++) { //cols
       row[j] = (i+j) % 2;
-      $('#game').append('<button id="' + slotCount + '" class="slot empty">');
+      $('#board').append('<button id="' + slotCount + '" class="slot empty">');
       slotCount++;
       if(j == 1 || j == 5)
       {
@@ -54,8 +54,14 @@ function startGame() {
 
   };
 
-  board[3][5] = 0
+  board[3][0] = 0
   board[3][1] = 0
+  board[3][2] = 0
+  board[3][3] = 0
+  board[3][4] = 0
+  board[3][5] = 0
+  board[3][6] = 0
+  board[3][7] = 0
 
   result = board.map(
     function(){
@@ -70,10 +76,24 @@ function startGame() {
   console.log(hintsHor)
   console.log(hintsVer)
 
+  $('#hintsVertical').css('width', rows * 50 )
+  $('#hintsHorizontal').css('margin-top', $('#hintsVertical').outerHeight())
+  $('#hintsHorizontal').css('height', rows * 50 )
+  $('#hintsVertical .hint ').css('height', $('#hintsVertical').outerHeight())
 
+  $('#game').css('width', $('#board').outerWidth() + $('#hintsHorizontal').outerWidth() + 1)
   $('.slot').click(slotClick);
 
   drawGame();
+  var slotCount = 0;
+  // for (var row = 0; row < result.length; row++) {
+  //   for (var col = 0; col < result.length; col++) {
+  //     if(board[row][col] == 1) {
+  //       $('#' + slotCount).addClass('filled');
+  //     }
+  //     slotCount++
+  //   }
+  // }
 }
 
 function drawGame () {
@@ -147,6 +167,36 @@ function calcHints(board) {
     blocksHor = []
     blockHor = 0
 
+  };
+  //append Hints
+  var hor
+  var ver
+  for (var i = 0; i < rowAmount; i++) {
+    $('#hintsVertical').append('<div id="ver' + i + '" class="hint vertical"></div>')
+    $('#hintsHorizontal').append('<div id="hor' + i + '" class="hint horizontal"></div>')
+    for (var j = 0; j < hintsVer[i].length; j++) {
+      ver = hintsVer[i][j]
+       if(j < hintsVer[i].length - 1)
+      {
+        ver += '<br>'
+      }
+      $('#hintsVertical #ver' + i).append(ver)
+    };
+
+    if(hintsHor[i].length == 0) {
+      $('#hintsHorizontal #hor' + i).append(0)
+    }
+    for (var j = 0; j < hintsHor[i].length; j++) {
+      hor = hintsHor[i][j]
+
+
+      if(j < hintsHor[i].length - 1)
+      {
+        hor += ', '
+      }
+      $('#hintsHorizontal #hor' + i).append(hor)
+    };
+    console.log('hints')
   };
   // console.log(hintsVer)
   // this.hintsHor = hintsHor

@@ -1,14 +1,20 @@
+html, body {
+    height: 100%;
+}
 #game {
-  width: 400px;
+  float: left;
+}
+
+#board {
   height: auto;
-  border: 1px solid black;
-  margin: 200px auto;
+  float: left;
 }
 
 .slot {
   width: 50px;
   height: 50px;
   border: 1px solid black;
+  float:left;
 }
 
 .filled {
@@ -32,3 +38,75 @@
 #newGame {
   color: #000;
 }
+
+.hints {
+  float: left;
+  box-sizing: border-box;
+
+}
+
+#hintsVertical {
+  height: auto;
+  float: left;
+  background: #ddd;
+
+}
+
+#hintsVertical .hint {
+  float: left;
+  min-height: 100% !important;
+  width: 50px;
+  box-sizing: border-box;
+  /* Internet Explorer 10 */
+  -ms-flex-align:end;
+  /* Firefox */
+  -moz-box-align:end;
+  /* Safari, Opera, and Chrome */
+  -webkit-box-align: end;
+  /* W3C */
+  box-align:end;
+
+  border-right: 1px solid #fff;
+}
+
+
+
+#hintsHorizontal {
+  width: auto;
+  float: left;
+  background: #ddd;
+}
+
+#hintsHorizontal .hint {
+  clear: both;
+  height: 50px;
+  border-bottom: 1px solid #fff;
+}
+.hint {
+  padding: 5px;
+  position: relative;
+  box-sizing: border-box;
+  /* Internet Explorer 10 */
+  display:-ms-flexbox;
+  -ms-flex-pack:center;
+  -ms-flex-align:center;
+
+  /* Firefox */
+  display:-moz-box;
+  -moz-box-pack:center;
+  -moz-box-align:center;
+
+  /* Safari, Opera, and Chrome */
+  display:-webkit-box;
+  -webkit-box-pack:center;
+  -webkit-box-align:center;
+
+  /* W3C */
+  display:box;
+  box-pack:center;
+  box-align:center;
+}
+
+
+
+
