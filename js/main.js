@@ -1,38 +1,65 @@
-var board = [[]];
-var result = [[]];
+var board = [[]]
+var result = [[]]
 var hintsHor = []
 var hintsVer = [[]]
+var mode = 1
+var currentFilling = 0
+var drag = false
 $('body').append('<div id="winMessage"><div id="message"> <h1>You did it!</h1><button id="newGame">Restart</button> </div></div>');
 $('#winMessage').hide();
 startGame();
 
 
 function slotClick () {
-  var id = $(this).attr('id');
+
+    var slot = getSlot($(this).attr('id'))
+    if(drag){
+      result[slot.row][slot.col] = currentFilling;
+      drawGame()
+      check()
+    }
+
+    console.log(drag)
+
+
+};
+function getSlot(id) {
   var rows = board.length;
-  var col = id % rows;
-  var row = Math.floor(id / rows);
-  var state = result[row][col];
+  var c = id % rows;
+  var r = Math.floor(id / rows);
+  var status = result[r][c];
 
-  if(state == 0) {
-    result[row][col] = 1;
-  }
-  else {
-    result[row][col] = 0;
-  }
-  drawGame();
-  check();
-  };
+  return {state: status, row: r, col: c}
+}
+function clickHandler(event) {
+    drag = true;
+    var slot = getSlot($(this).attr('id'))
+    if(slot.state == mode) {
+      currentFilling = 0
+      console.log("nope")
+    }
+    else {
+      currentFilling = mode
+      console.log("yep")
 
-$('#newGame').click(startGame);
+    }
+    result[slot.row][slot.col] = currentFilling;
+
+    drawGame()
+    check()
+    event.stopPropagation();
+  }
+$('#mode').click(changeMode)
+$('#newGame').click(startGame)
 
 function startGame() {
   $('#winMessage').hide();
   var rows = 8;
   board = [];
   result = [];
+  hintsHor = []
+  hintsVer = [[]]
   $('#board').css('width', rows * 50)
-
 
   $('#board').empty();
 
@@ -82,8 +109,12 @@ function startGame() {
   $('#hintsVertical .hint ').css('height', $('#hintsVertical').outerHeight())
 
   $('#game').css('width', $('#board').outerWidth() + $('#hintsHorizontal').outerWidth() + 1)
-  $('.slot').click(slotClick);
+  $('#game').css('height', $('#board').outerHeight() + $('#hintsVertical').outerHeight() + 1)
+  $('.slot').mousedown(clickHandler)
+  $('.slot').mouseup(function() { drag = false});
+  $('#game').mouseleave(function() { drag = false});
 
+  $('.slot').mouseover(slotClick)
   drawGame();
   var slotCount = 0;
   // for (var row = 0; row < result.length; row++) {
@@ -103,19 +134,33 @@ function drawGame () {
       if(result[row][col] == 1) {
         $('#' + slotCount).addClass('filled');
       }
+      else if(result[row][col] == 2)
+      {
+        $('#' + slotCount).removeClass('filled');
+        $('#' + slotCount).addClass('note');
+      }
       else {
         $('#' + slotCount).removeClass('filled');
+        $('#' + slotCount).removeClass('note');
       }
       slotCount++;
     };
   };
+  if(mode == 1)
+  {
+    $('#mode button').css('background-image', 'url("img/pen.png")')
+  }
+  else
+  {
+    $('#mode button').css('background-image', 'url("img/pencil.png")')
+  }
 }
 
 function check () {
   var won = true;
   for (var row = 0; row < result.length; row++) {
     for (var col = 0; col < result.length; col++) {
-      if(board[row][col] != result[row][col]) {
+      if(board[row][col] != result[row][col] && result[row][col] != 2) {
         won = false;
       }
     }
@@ -171,6 +216,8 @@ function calcHints(board) {
   //append Hints
   var hor
   var ver
+  $('#hintsHorizontal').empty();
+  $('#hintsVertical').empty();
   for (var i = 0; i < rowAmount; i++) {
     $('#hintsVertical').append('<div id="ver' + i + '" class="hint vertical"></div>')
     $('#hintsHorizontal').append('<div id="hor' + i + '" class="hint horizontal"></div>')
@@ -197,12 +244,22 @@ function calcHints(board) {
       $('#hintsHorizontal #hor' + i).append(hor)
     };
     console.log('hints')
+
   };
-  // console.log(hintsVer)
-  // this.hintsHor = hintsHor
-  // this.hintsVer = hintsVer
+
 }
 
-$(function () {
 
-});
+
+function changeMode ()
+{
+  if(mode == 1)
+  {
+    mode = 2
+  }
+  else
+  {
+    mode = 1
+  }
+  drawGame()
+}
