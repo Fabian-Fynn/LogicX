@@ -15,6 +15,7 @@ html, body {
 #board {
   height: auto;
   float: left;
+  background: #bbb;
 }
 
 .slot {
@@ -27,12 +28,24 @@ html, body {
 
 .filled {
   background: #000;
+  border: 1px solid #bbb;
+}
+
+.filled-drag {
+  background: #000;
+  opacity: 0.5;
+  border: 1px solid #bbb;
 }
 
 .note {
-  background: url('../img/cross.png') no-repeat 10px 10px #bbb;
+  background: url('../img/cross.png') no-repeat 10px 10px;
   background-size: 30px;
+}
 
+.note-drag {
+  background: url('../img/cross.png') no-repeat 10px 10px;
+  background-size: 30px;
+  opacity: 0.5;
 }
 
 #winMessage {
@@ -132,6 +145,7 @@ html, body {
   background-color: #ddd;
   background: url('../img/pen.png');
   background-size: 46px;
+  background-repeat: no-repeat;
 }
 
 button:focus {
